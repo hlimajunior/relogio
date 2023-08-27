@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: #404040;
+}
+
+.container {
+  background: radial-gradient(circle, #000080, #00001a);
+}
+
+.backcolor {
+  background-color: #404040;
+}
