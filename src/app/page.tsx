@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { utcToZonedTime } from "date-fns-tz";
 
 export default function Clock() {
-  const [time, setTime] = useState(new Date());
+  const saoPauloTimeZone = "America/Sao_Paulo";
+  const [time, setTime] = useState(
+    utcToZonedTime(new Date(), saoPauloTimeZone)
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(new Date());
+      setTime(utcToZonedTime(new Date(), saoPauloTimeZone));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -19,19 +24,24 @@ export default function Clock() {
   const hours = time.getHours().toString();
   const minutes = time.getMinutes().toString().padStart(2, "0");
   const seconds = time.getSeconds().toString().padStart(2, "0");
+  const formattedTime = format(time, "HH:mm:ss");
 
   return (
-    <div className="backcolor flex flex-col items-center justify-center p-0">
-      <span className="font-semibold font-sans text-[150px]
-       text-red-500 m-0">
-        {`${hours}`}<br />
-        {`${minutes}`}<br />
-       
+    <div className="h-screen flex flex-col justify-center items-center ">
+      <span
+        className="flex flex-col justify-center items-center font-semibold font-sans text-[250px]
+       text-red-500"
+      >
+        {hours}
+        <br />
+        {minutes}
+        <br />
+        <span className="text-[50px]">{seconds}</span>
       </span>
       <br />
-      <span className="font-thin font-sans text-[80px] text-teal-500 text-center" >
+      <div className="font-thin font-sans text-[100px] text-teal-500 text-center">
         {`${day}/${month}`}
-      </span>
+      </div>
     </div>
   );
 }
