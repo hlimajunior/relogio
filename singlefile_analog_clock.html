@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Relógio</title>
+    <!-- <link rel="stylesheet" href="./style.css"> -->
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap");
+
+        *,
+        *:afater,
+        *:before {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background-color: #2c2c2c;
+            --background-color: #282828;
+            --light-color: #86e5fd;
+            --spike-background: #ffff00e5;
+            --front-color: #fff;
+            --front-relogio: #66e0f0c5;
+            --background-relogio: rgb(48, 43, 48);
+        }
+
+        body,
+        html {
+            background: var(--background-color);
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            color: var(--front-color);
+            font-family: "Comfortaa", cursive;
+
+        }
+
+        .relogio {
+            --relogio-size: 360px;
+            width: var(--relogio-size);
+            height: var(--relogio-size);
+            position: relative;
+            inset: 0;
+            margin: auto;
+            border-radius: 50%;
+            background-color: var(--background-relogio);
+
+            border: 7px solid #282828;
+
+            box-shadow: -4px -4px 10px rgba(67, 67, 67, 0.5),
+                inset 4px 4px 10px rgba(0, 0, 0, 0.5),
+                inset -4px -4px 10px rgba(67, 67, 67, 0.5),
+                4px 4px 10px rgba(0, 0, 0, 0.3);
+
+            border-radius: 50%;
+            margin: 50px auto;
+        }
+
+        .spike {
+            position: absolute;
+            width: 8px;
+            height: 1px;
+            background: var(--spike-background);
+            line-height: 20px;
+            transform-origin: 50%;
+            z-index: 5;
+            inset: 0;
+            margin: auto;
+            font-style: normal;
+            transform: rotate(var(--rotate)) translateX(var(--dail-size));
+        }
+
+        .spike:nth-child(5n+1) {
+            box-shadow: -7px 0 var(--spike-background);
+        }
+
+        .spike:nth-child(5n+1):after {
+            content: attr(data-i);
+            position: absolute;
+            right: 22px;
+            top: -10px;
+            transition: 1s linear;
+            color: var(--front-relogio);
+            transform: rotate(calc(var(--dRotate) - var(--rotate)));
+        }
+
+        .segundos {
+            --dRotate: 0deg;
+            --dail-size: calc((var(--relogio-size)/ 2) - 8px);
+            font-weight: 800;
+            font-size: 18px;
+            transform: rotate(calc(-1 * var(--dRotate)));
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            transition: 1s linear;
+        }
+
+        .minutos {
+            --dail-size: calc((var(--relogio-size)/ 2) - 65px);
+            font-size: 16px;
+            transform: rotate(calc(-1 * var(--dRotate)));
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            transition: 1s linear;
+        }
+
+        .stop-anim {
+            transition: 0s linear;
+        }
+
+        .stop-anim .spike:after {
+            transition: 0s linear !important;
+        }
+
+        .hora {
+
+            font-size: 70px;
+            font-weight: 900;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .minuto {
+            font-family: Courier, monospace;
+            font-size: 36px;
+            font-weight: 900;
+            position: absolute;
+            background: var(--background-relogio);
+            z-index: 10;
+            right: calc(var(--relogio-size)/ 4.5);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .minuto:after {
+            content: "";
+            position: absolute;
+            border: 3px solid var(--light-color);
+            border-right: none;
+            height: 50px;
+            left: -10px;
+            top: 50%;
+            border-radius: 40px 0 0 40px;
+            width: calc(var(--relogio-size)/ 2.75);
+            transform: translatey(-50%);
+        }
+
+        .emoji {
+            font-size: 50px;
+        }
+
+        #caixa {
+            width: fit-content;
+            z-index: 10;
+            transition: 1s linear;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div id="caixa">
+            <div class="relogio">
+                <div class="segundos"></div>
+                <div class="minutos"></div>
+                <div class="minuto">44</div>
+                <div class="hora"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="visibility:hidden">
+        <span class="emoji">
+            &#128525;
+            &#128536;
+            &#128149;
+            &#128557;
+            &#128293;
+            &#128514;
+            &#128315;
+        </span>
+    </div>
+
+</body>
+
+<script>
+    const segundos = document.querySelector('.segundos');
+    const minutos = document.querySelector('.minutos');
+    const minuto = document.querySelector('.minuto');
+    const hora = document.querySelector('.hora');
+    const caixa = document.getElementById('caixa');
+
+    /*
+    let xc = 100;
+    let yc = 100;
+    let absx = 10;
+    let absy = 10;
+    */
+
+    // Create spikes
+    for (let s = 0; s < 60; s++) {
+        let mSpikeEl = document.createElement('i');
+        let sSpikeEl = document.createElement('i');
+        mSpikeEl.className = 'spike'
+        sSpikeEl.className = 'spike'
+        mSpikeEl.style = `--rotate:${6 * s}deg`;
+        sSpikeEl.style = `--rotate:${6 * s}deg`;
+        mSpikeEl.setAttribute('data-i', s);
+        sSpikeEl.setAttribute('data-i', s);
+
+        segundos.append(sSpikeEl);
+        minutos.append(mSpikeEl);
+    }
+
+    function getTime() {
+        let date = new Date(),
+            s = date.getSeconds(),
+            m = date.getMinutes();
+
+        hora.textContent = date.getHours();
+        minuto.textContent = m < 10 ? '0' + m : m.toString();
+        minutos.style = `--dRotate:${6 * m}deg`;
+
+        if (s == 0) {
+            segundos.classList.add('stop-anim')
+        } else {
+            segundos.classList.remove('stop-anim')
+        }
+        if (m == 0) {
+            minutos.classList.add('stop-anim')
+        } else {
+            minutos.classList.remove('stop-anim')
+        }
+
+        segundos.style = `--dRotate:${6 * s}deg`;
+
+        /*
+        caixa.style.left = xc + "px";
+        caixa.style.top = yc + "px";
+        
+        xc += absx;
+        yc += absy;
+    
+        if (xc <= -10 || xc >= parent.innerWidth - 430) {
+          absx = absx * -1;
+        }
+        if (yc <= -10 || yc >= parent.innerHeight - 440) {
+          absy = absy * -1;
+        }
+        */
+    }
+
+    setInterval(getTime, 1000);
+    getTime();
+</script>
+
+</html>
